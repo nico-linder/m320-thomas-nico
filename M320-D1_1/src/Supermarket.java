@@ -44,7 +44,7 @@ class Supermarket {
         System.out.println("\nSetting sale status for category: " + category);
         for (Product product : inventory) {
             if (product.getCategory().equalsIgnoreCase(category)) {
-                product.setOnSale(onSale); // Object communication to change state
+                product.setOnSale(onSale);
                 System.out.println("Updated: " + product.getName());
             }
         }
