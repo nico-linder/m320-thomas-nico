@@ -15,6 +15,10 @@ public class Bank {
         System.out.println("New account created for " + account.getAccountHolderName() + " with number " + account.getAccountNumber());
     }
 
+    public String getBankName() {
+        return bankName;
+    }
+
     public Account findAccount(String accountNumber) {
         for (Account account : accounts) {
             if (account.getAccountNumber().equals(accountNumber)) {
