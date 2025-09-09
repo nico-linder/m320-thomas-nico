@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ShoppingCart {
-    private List<CartItem> items; // Complex data type (List of objects)
-    private int cartId; // Primitive data type
+    private List<CartItem> items;
+    private int cartId;
 
     public ShoppingCart(int cartId) {
         this.cartId = cartId;
@@ -14,19 +14,19 @@ class ShoppingCart {
         return cartId;
     }
 
-    // Method that communicates with Product objects and passes values
+    
     public boolean addItem(Product product, int quantity) {
         if (product.getStock() >= quantity) {
-            // Check if product already in cart
+            
             for (CartItem item : items) {
                 if (item.getProduct().getName().equals(product.getName())) {
                     item.increaseQuantity(quantity);
-                    return product.reduceStock(quantity); // Object communication
+                    return product.reduceStock(quantity);
                 }
             }
-            // Add new item
+            
             items.add(new CartItem(product, quantity));
-            return product.reduceStock(quantity); // Object communication with value passing
+            return product.reduceStock(quantity);
         }
         return false;
     }
@@ -35,12 +35,12 @@ class ShoppingCart {
         for (CartItem item : items) {
             if (item.getProduct().getName().equals(productName)) {
                 if (item.getQuantity() <= quantity) {
-                    // Return stock to product
-                    item.getProduct().addStock(item.getQuantity()); // Object communication
+                    
+                    item.getProduct().addStock(item.getQuantity());
                     items.remove(item);
                 } else {
                     item.decreaseQuantity(quantity);
-                    item.getProduct().addStock(quantity); // Object communication
+                    item.getProduct().addStock(quantity);
                 }
                 return true;
             }
@@ -51,20 +51,20 @@ class ShoppingCart {
     public double getTotalPrice() {
         double total = 0;
         for (CartItem item : items) {
-            // Communication with Product objects to get price
+            
             total += item.getProduct().getPrice() * item.getQuantity();
         }
         return total;
     }
 
     public List<CartItem> getItems() {
-        return new ArrayList<>(items); // Return copy to maintain encapsulation
+        return new ArrayList<>(items);
     }
 
     public void clearCart() {
-        // Return all items to stock before clearing
+        
         for (CartItem item : items) {
-            item.getProduct().addStock(item.getQuantity()); // Object communication
+            item.getProduct().addStock(item.getQuantity());
         }
         items.clear();
     }

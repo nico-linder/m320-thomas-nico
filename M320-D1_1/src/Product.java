@@ -18,7 +18,7 @@ class Product {
     }
 
     public double getPrice() {
-        return isOnSale ? price * 0.8 : price; // 20% discount on sale
+        return isOnSale ? price * 0.8 : price;
     }
 
     public double getOriginalPrice() {
@@ -37,7 +37,7 @@ class Product {
         return isOnSale;
     }
 
-    // Methods to change object state
+    
     public boolean reduceStock(int quantity) {
         if (stock >= quantity) {
             stock -= quantity;
