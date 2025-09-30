@@ -1,13 +1,3 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 import java.util.Scanner;
 
 public class Main {
@@ -20,82 +10,6 @@ public class Main {
         myBank.addAccount(accountThomas);
 
         Scanner scanner = new Scanner(System.in);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        int choice;
-
-        do {
-            System.out.println("\n--- Welcome to " + myBank.getBankName() + " ---");
-            System.out.println("1. Display all accounts");
-            System.out.println("2. Deposit");
-            System.out.println("3. Withdraw");
-            System.out.println("4. Transfer");
-            System.out.println("5. Print account statement");
-            System.out.println("6. Exit");
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (choice) {
-                case 1:
-                    myBank.displayAllAccounts();
-                    break;
-                case 2:
-                    System.out.print("Enter account number: ");
-                    String accNumDeposit = scanner.nextLine();
-                    System.out.print("Enter amount to deposit: ");
-                    double amountDeposit = scanner.nextDouble();
-                    scanner.nextLine(); // consume newline
-                    Account accDeposit = myBank.findAccount(accNumDeposit);
-                    if (accDeposit != null) {
-                        accDeposit.deposit(amountDeposit);
-                    } else {
-                        System.out.println("Account not found.");
-                    }
-                    break;
-                case 3:
-                    System.out.print("Enter account number: ");
-                    String accNumWithdraw = scanner.nextLine();
-                    System.out.print("Enter amount to withdraw: ");
-                    double amountWithdraw = scanner.nextDouble();
-                    scanner.nextLine(); // consume newline
-                    Account accWithdraw = myBank.findAccount(accNumWithdraw);
-                    if (accWithdraw != null) {
-                        accWithdraw.withdraw(amountWithdraw);
-                    } else {
-                        System.out.println("Account not found.");
-                    }
-                    break;
-                case 4:
-                    System.out.print("Enter source account number: ");
-                    String fromAcc = scanner.nextLine();
-                    System.out.print("Enter destination account number: ");
-                    String toAcc = scanner.nextLine();
-                    System.out.print("Enter amount to transfer: ");
-                    double amountTransfer = scanner.nextDouble();
-                    scanner.nextLine(); // consume newline
-                    myBank.executeTransfer(fromAcc, toAcc, amountTransfer);
-                    break;
-                case 5:
-                    System.out.print("Enter account number: ");
-                    String accNumStatement = scanner.nextLine();
-                    Account accStatement = myBank.findAccount(accNumStatement);
-                    if (accStatement != null) {
-                        accStatement.printStatement();
-                    } else {
-                        System.out.println("Account not found.");
-                    }
-                    break;
-                case 6:
-                    System.out.println("Thank you for banking with us!");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-        } while (choice != 6);
-
-=======
         boolean running = true;
 
         while (running) {
@@ -114,46 +28,6 @@ public class Main {
                     myBank.displayAllAccounts();
                     break;
 
-=======
-        boolean running = true;
-
-        while (running) {
-            System.out.println("\n--- " + myBank.getName() + " ---");
-            System.out.println("1. Show all accounts");
-            System.out.println("2. Deposit money");
-            System.out.println("3. Transfer money");
-            System.out.println("4. Show account statement");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-
-            String choice = scanner.nextLine();
-
-            switch (choice) {
-                case "1":
-                    myBank.displayAllAccounts();
-                    break;
-
->>>>>>> Stashed changes
-=======
-        boolean running = true;
-
-        while (running) {
-            System.out.println("\n--- " + myBank.getName() + " ---");
-            System.out.println("1. Show all accounts");
-            System.out.println("2. Deposit money");
-            System.out.println("3. Transfer money");
-            System.out.println("4. Show account statement");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-
-            String choice = scanner.nextLine();
-
-            switch (choice) {
-                case "1":
-                    myBank.displayAllAccounts();
-                    break;
-
->>>>>>> Stashed changes
                 case "2":
                     System.out.print("Enter IBAN: ");
                     String iban = scanner.nextLine();
@@ -201,13 +75,6 @@ public class Main {
             }
         }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         scanner.close();
     }
 }
