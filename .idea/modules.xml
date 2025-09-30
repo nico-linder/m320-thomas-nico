@@ -4,11 +4,17 @@
     <modules>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <module fileurl="file://$PROJECT_DIR$/M320-D1_1/M320-D1_1.iml" filepath="$PROJECT_DIR$/M320-D1_1/M320-D1_1.iml" />
       <module fileurl="file://$PROJECT_DIR$/M320-D1_2/M320-D1_2.iml" filepath="$PROJECT_DIR$/M320-D1_2/M320-D1_2.iml" />
       <module fileurl="file://$PROJECT_DIR$/M320-N1/M320-N1.iml" filepath="$PROJECT_DIR$/M320-N1/M320-N1.iml" />
       <module fileurl="file://$PROJECT_DIR$/M320-V1/M320-V1.iml" filepath="$PROJECT_DIR$/M320-V1/M320-V1.iml" />
       <module fileurl="file://$PROJECT_DIR$/M320-V2/M320-V2.iml" filepath="$PROJECT_DIR$/M320-V2/M320-V2.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/M320-D1/M320-D1.iml" filepath="$PROJECT_DIR$/M320-D1/M320-D1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/M320-N1/M320-N1.iml" filepath="$PROJECT_DIR$/M320-N1/M320-N1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/M320-V1/M320-V1.iml" filepath="$PROJECT_DIR$/M320-V1/M320-V1.iml" />
+>>>>>>> Stashed changes
 =======
       <module fileurl="file://$PROJECT_DIR$/M320-D1/M320-D1.iml" filepath="$PROJECT_DIR$/M320-D1/M320-D1.iml" />
       <module fileurl="file://$PROJECT_DIR$/M320-N1/M320-N1.iml" filepath="$PROJECT_DIR$/M320-N1/M320-N1.iml" />

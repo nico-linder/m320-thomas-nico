@@ -1,6 +1,9 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -17,6 +20,7 @@ public class Main {
         myBank.addAccount(accountThomas);
 
         Scanner scanner = new Scanner(System.in);
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
         int choice;
@@ -130,6 +134,26 @@ public class Main {
                     break;
 
 >>>>>>> Stashed changes
+=======
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\n--- " + myBank.getName() + " ---");
+            System.out.println("1. Show all accounts");
+            System.out.println("2. Deposit money");
+            System.out.println("3. Transfer money");
+            System.out.println("4. Show account statement");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    myBank.displayAllAccounts();
+                    break;
+
+>>>>>>> Stashed changes
                 case "2":
                     System.out.print("Enter IBAN: ");
                     String iban = scanner.nextLine();
@@ -178,6 +202,9 @@ public class Main {
         }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
