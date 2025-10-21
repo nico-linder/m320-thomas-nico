@@ -1,4 +1,3 @@
-
 public class Starter {
 
 	/**
@@ -8,9 +7,8 @@ public class Starter {
 		
 		Picture pic = new Picture();
 		pic.draw();
+		pic.animateScene();
 		
-		
-
 	}
 
 }
