@@ -264,20 +264,7 @@ The application supports 10 major world currencies:
 
 ---
 
-## 11. Learning Objectives Achieved
-
-✅ **Own Description**: This comprehensive README documentation
-✅ **Delegation**: Multi-layered architecture with clear task delegation
-✅ **Input Validation**: `DataValidationService` with custom exceptions
-✅ **Code Separation**: Strict separation of UI, logic, and service calls
-✅ **MVC Pattern**: Clean Model-View-Controller implementation
-✅ **Exception Handling**: Custom exceptions for domain-specific errors
-✅ **Encapsulation**: Private fields, public interfaces
-✅ **Immutability**: Thread-safe models with `final` fields
-
----
-
-## 12. Technical Highlights
+## 11. Technical Highlights
 
 ### Mock Currency Exchange API Service
 
@@ -333,7 +320,7 @@ All exchange rates use USD as the base:
 
 ---
 
-## 13. Future Enhancements
+## 12. Future Enhancements
 
 - Integration with real exchange rate API (ExchangeRate-API, Fixer.io, Open Exchange Rates)
 - Persistent storage (save favorites and history to file/database)
