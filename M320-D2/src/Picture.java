@@ -6,7 +6,7 @@
  *
  * This class was written as an early example for teaching Java with BlueJ.
  * 
- * @author  Michael Kšlling and David J. Barnes
+ * @author  Michael Kï¿½lling and David J. Barnes
  * @version 2011.07.31
  */
 public class Picture
@@ -15,6 +15,8 @@ public class Picture
     private Square window;
     private Triangle roof;
     private Circle sun;
+    private Cloud cloud;
+    private Person person;
 
     /**
      * Constructor for objects of class Picture
@@ -34,15 +36,15 @@ public class Picture
         wall.moveVertical(20);
         wall.changeSize(120);
         wall.makeVisible();
-        
+
         window = new Square();
-        window.changeColor("blue");
+        window.changeColor("black");
         window.moveHorizontal(-120);
         window.moveVertical(40);
         window.changeSize(40);
         window.makeVisible();
 
-        roof = new Triangle();  
+        roof = new Triangle();
         roof.changeSize(60, 180);
         roof.moveHorizontal(20);
         roof.moveVertical(-60);
@@ -54,6 +56,31 @@ public class Picture
         sun.moveVertical(-40);
         sun.changeSize(80);
         sun.makeVisible();
+
+        // Create cloud object
+        cloud = new Cloud();
+        cloud.makeVisible();
+
+        // New person (not visable)
+        person = new Person();
+    }
+
+    /**
+     * Animates the scene as per the assignment requirements.
+     * The cloud moves, then the person appears and walks to the house,
+     * and finally, the sun sets.
+     */
+    public void animateScene()
+    {
+        // Clouds move Horizontal
+        cloud.slowMoveHorizontal(-350);
+
+        // person goes house (after cloud)
+        person.makeVisible();
+        person.slowMoveHorizontal(-80);
+
+        // sun down
+        sun.slowMoveVertical(250);
     }
 
     /**

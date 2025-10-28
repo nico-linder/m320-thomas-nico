@@ -1,0 +1,120 @@
+@startuml
+title Use Case: Szene animieren
+
+actor Benutzer
+participant ":Starter" as Starter
+participant ":Picture" as Picture
+participant ":Cloud" as Cloud
+participant "circle1:Circle" as Circle1
+participant "circle2:Circle" as Circle2
+participant ":Person" as Person
+participant ":Sun" as Sun
+participant ":Canvas" as Canvas
+
+== Initialisierung ==
+Benutzer -> Starter: main()
+activate Starter
+Starter -> Picture: draw()
+activate Picture
+note right: Erstellt und positioniert\nalle Objekte
+Picture --> Starter: 
+deactivate Picture
+
+== Animation der Szene ==
+Starter -> Picture: animateScene()
+activate Picture
+
+note over Picture: Phase 1: Wolken bewegen
+
+Picture -> Cloud: slowMoveHorizontal(-350)
+activate Cloud
+
+loop 350 mal (für jeden Pixel)
+    Cloud -> Circle1: moveHorizontal(-1)
+    activate Circle1
+    Circle1 -> Canvas: erase(this)
+    activate Canvas
+    Canvas --> Circle1
+    deactivate Canvas
+    Circle1 -> Canvas: draw(this, color, shape)
+    activate Canvas
+    Canvas -> Canvas: redraw()
+    Canvas --> Circle1
+    deactivate Canvas
+    Circle1 --> Cloud
+    deactivate Circle1
+    
+    Cloud -> Circle2: moveHorizontal(-1)
+    activate Circle2
+    Circle2 -> Canvas: erase(this)
+    activate Canvas
+    Canvas --> Circle2
+    deactivate Canvas
+    Circle2 -> Canvas: draw(this, color, shape)
+    activate Canvas
+    Canvas -> Canvas: redraw()
+    Canvas --> Circle2
+    deactivate Canvas
+    Circle2 --> Cloud
+    deactivate Circle2
+end
+
+Cloud --> Picture
+deactivate Cloud
+
+note over Picture: Phase 2: Person erscheint und läuft
+
+Picture -> Person: makeVisible()
+activate Person
+Person -> Canvas: draw(this, color, shape)
+activate Canvas
+Canvas -> Canvas: redraw()
+Canvas --> Person
+deactivate Canvas
+Person --> Picture
+deactivate Person
+
+Picture -> Person: slowMoveHorizontal(-80)
+activate Person
+
+loop 80 mal
+    Person -> Canvas: erase(this)
+    activate Canvas
+    Canvas --> Person
+    deactivate Canvas
+    Person -> Canvas: draw(this, color, shape)
+    activate Canvas
+    Canvas -> Canvas: redraw()
+    Canvas --> Person
+    deactivate Canvas
+end
+
+Person --> Picture
+deactivate Person
+
+note over Picture: Phase 3: Sonne geht unter
+
+Picture -> Sun: slowMoveVertical(250)
+activate Sun
+
+loop 250 mal
+    Sun -> Canvas: erase(this)
+    activate Canvas
+    Canvas --> Sun
+    deactivate Canvas
+    Sun -> Canvas: draw(this, color, shape)
+    activate Canvas
+    Canvas -> Canvas: redraw()
+    Canvas --> Sun
+    deactivate Canvas
+end
+
+Sun --> Picture
+deactivate Sun
+
+Picture --> Starter
+deactivate Picture
+Starter --> Benutzer
+deactivate Starter
+
+@enduml
