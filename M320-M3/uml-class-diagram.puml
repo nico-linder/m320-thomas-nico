@@ -1,0 +1,64 @@
+@startuml M320-V3-StockPortfolio-ClassDiagram
+
+title Stock Portfolio System - UML Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor<<interface>> LightYellow
+    BorderColor<<interface>> Orange
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+interface StockExchange <<interface>> {
+    {abstract} +getPrice(stockName: String): double
+}
+
+class NewYorkStockExchange {
+    +getPrice(stockName: String): double
+}
+
+class ZurichStockExchange {
+    +getPrice(stockName: String): double
+}
+
+StockExchange <|.. NewYorkStockExchange
+StockExchange <|.. ZurichStockExchange
+
+class Stock {
+    -name: String
+    -quantity: int
+    ..
+    +Stock(name: String, quantity: int)
+    +getName(): String
+    +getQuantity(): int
+}
+
+class Portfolio {
+    -stocks: List<Stock>
+    -exchange: StockExchange
+    ..
+    +Portfolio(exchange: StockExchange)
+    +addStock(stock: Stock): void
+    +getTotalValue(): double
+    +setExchange(exchange: StockExchange): void
+}
+
+Portfolio *-- "0..*" Stock
+Portfolio o-- "1" StockExchange
+
+class Main {
+    {static} +main(args: String[]): void
+    {static} -displayMenu(): void
+    {static} -selectExchange(scanner: Scanner): StockExchange
+    {static} -addStockToPortfolio(scanner: Scanner, portfolio: Portfolio): void
+    {static} -switchExchange(scanner: Scanner, portfolio: Portfolio): void
+}
+
+Main ..> Portfolio
+Main ..> NewYorkStockExchange
+Main ..> ZurichStockExchange
+Main ..> Stock
+
+@enduml
