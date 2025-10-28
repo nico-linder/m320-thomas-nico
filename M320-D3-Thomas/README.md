@@ -1,6 +1,6 @@
-# Weather Information System - M320 D3 Kompetenznachweis
+# Currency Converter System - M320 D3 Kompetenznachweis
 
-**Student:** Thomas
+**Student:** Thomas & Nico
 **Module:** M320 - Object-Oriented Programming
 **Date:** October 2025
 
@@ -8,46 +8,50 @@
 
 ## 1. Short Description of the Application
 
-This is a **console-based weather information system** developed in Java that allows users to query current weather data for cities worldwide. The application demonstrates key object-oriented programming principles including delegation, encapsulation, and clean code separation following the MVC (Model-View-Controller) architectural pattern.
+This is a **console-based currency converter system** developed in Java that allows users to convert between different currencies, check exchange rates, and track conversion history. The application demonstrates key object-oriented programming principles including delegation, encapsulation, and clean code separation following the MVC (Model-View-Controller) architectural pattern.
 
 ### What Does It Do?
 
 Users can interact with the application through a simple menu-driven interface to:
-- **Get weather information** for any city (temperature, humidity, wind speed, pressure, conditions)
-- **Manage favorite cities** for quick access to frequently checked locations
-- **View weather history** of the last 10 queries with timestamps
-- **Change temperature units** between Celsius, Fahrenheit, and Kelvin
+- **Convert currencies** with real-time exchange rates (USD, EUR, CHF, GBP, JPY, CNY, INR, AUD, CAD, BRL)
+- **Check exchange rates** between any two supported currencies
+- **Manage favorite currency pairs** for quick access to frequently used conversions
+- **View conversion history** of the last 10 transactions with timestamps
 - **Handle errors gracefully** with custom exception handling and input validation
 
-The application uses a mock weather API service that simulates realistic weather data, network delays, and occasional connection failures for demonstration purposes.
+The application uses a mock currency exchange API service that simulates realistic exchange rate data, network delays, and occasional connection failures for demonstration purposes.
 
 ---
 
 ## 2. Key Features
 
-1. **Weather Queries**
-   - Look up current weather for any city worldwide
-   - Display comprehensive weather information (temperature, feels-like, conditions, humidity, wind, pressure)
-   - Automatic conversion to user's preferred temperature unit
+1. **Currency Conversion**
+   - Convert any amount between supported currencies
+   - Real-time exchange rate calculation
+   - Support for 10 major world currencies
+   - Accurate conversion with 2 decimal places
 
-2. **Favorite Cities Management**
-   - Add cities to favorites list
-   - Remove cities from favorites
-   - View all favorite cities
-   - Get weather for all favorites at once
+2. **Exchange Rate Lookup**
+   - View current exchange rates between currency pairs
+   - Display buy and sell rates (with 1.5% spread)
+   - Real-time rate updates with small market variations
+   - Timestamp for each rate query
 
-3. **Weather History**
-   - Automatically tracks last 10 weather queries
-   - Display historical searches with timestamps
+3. **Favorite Currency Pairs Management**
+   - Save frequently used currency pairs
+   - Quick access to favorite conversions
+   - Add and remove pairs easily
+   - Get rates for all favorites at once
+
+4. **Conversion History**
+   - Automatically tracks last 10 conversions
+   - Display historical transactions with timestamps
+   - View currency pairs and rates used
    - Clear history option
 
-4. **Temperature Unit Preferences**
-   - Support for Celsius (°C), Fahrenheit (°F), and Kelvin (K)
-   - User-configurable preferred unit
-   - Automatic conversion between all units
-
 5. **Robust Input Validation**
-   - Comprehensive validation for city names (2-100 characters, letters/spaces/hyphens only)
+   - Amount validation (positive numbers, max 1 billion)
+   - Currency code validation (must be valid 3-letter code)
    - Custom exceptions for specific error types
    - Clear error messages and graceful error recovery
 
@@ -60,56 +64,56 @@ The application uses a mock weather API service that simulates realistic weather
 The application follows a clean **MVC architecture** with clear separation of concerns:
 
 ```
-[User] ↔ [WeatherUI (View)] ↔ [WeatherController] ↔ [Services] ↔ [Models]
+[User] ↔ [CurrencyUI (View)] ↔ [CurrencyController] ↔ [Services] ↔ [Models]
 ```
 
 **View (UI Layer):**
-- `WeatherUI` - Console interface handling all user interactions
+- `CurrencyUI` - Console interface handling all user interactions
 - No business logic, only input/output operations
 
 **Controller (Business Logic):**
-- `WeatherController` - Orchestrates all operations
+- `CurrencyController` - Orchestrates all operations
 - Coordinates between UI and services
 - Manages application state (favorites, history, preferences)
 
 **Services (Helper Functions):**
-- `WeatherApiService` - Fetches weather data (mock API with realistic simulation)
+- `CurrencyApiService` - Fetches exchange rate data (mock API with realistic simulation)
 - `DataValidationService` - Validates all user inputs
-- `TemperatureConversionService` - Converts between temperature units
+- `CurrencyConversionService` - Performs currency conversions and formatting
 
 **Models (Data Layer):**
-- `City` - Represents a location (name, country, coordinates)
-- `Temperature` - Temperature value with unit
-- `WeatherData` - Complete weather information snapshot
-- `TemperatureUnit` - Enum for type-safe unit representation
+- `Currency` - Enum representing supported currencies with symbols
+- `CurrencyPair` - Represents a from/to currency combination
+- `ExchangeRate` - Exchange rate between two currencies
+- `ExchangeRateData` - Complete exchange rate information snapshot
 
 **Exceptions (Error Handling):**
-- `InvalidCityException` - Invalid city name validation failures
+- `InvalidCurrencyException` - Invalid currency code errors
 - `ApiConnectionException` - API connection issues
-- `InvalidTemperatureUnitException` - Unsupported temperature units
+- `InvalidAmountException` - Invalid amount validation failures
 
 ### Package Structure
 
 ```
-ch.tbz.m320.weather/
+ch.tbz.m320.currency/
 ├── Main.java                          # Application entry point
 ├── controller/
-│   └── WeatherController.java         # Business logic orchestrator
+│   └── CurrencyController.java        # Business logic orchestrator
 ├── ui/
-│   └── WeatherUI.java                 # Console user interface
+│   └── CurrencyUI.java                # Console user interface
 ├── service/
-│   ├── WeatherApiService.java         # Weather data provider (mock API)
+│   ├── CurrencyApiService.java        # Exchange rate provider (mock API)
 │   ├── DataValidationService.java     # Input validation
-│   └── TemperatureConversionService.java # Temperature conversions
+│   └── CurrencyConversionService.java # Currency conversions
 ├── model/
-│   ├── City.java                      # City data model
-│   ├── Temperature.java               # Temperature with unit
-│   ├── WeatherData.java               # Complete weather information
-│   └── TemperatureUnit.java           # Enum for temperature units
+│   ├── Currency.java                  # Currency enum
+│   ├── CurrencyPair.java              # Currency pair model
+│   ├── ExchangeRate.java              # Exchange rate model
+│   └── ExchangeRateData.java          # Complete exchange data
 └── exception/
-    ├── InvalidCityException.java      # City validation errors
+    ├── InvalidCurrencyException.java  # Currency validation errors
     ├── ApiConnectionException.java    # API connection errors
-    └── InvalidTemperatureUnitException.java # Temperature unit errors
+    └── InvalidAmountException.java    # Amount validation errors
 ```
 
 ---
@@ -117,8 +121,8 @@ ch.tbz.m320.weather/
 ## 4. OOP Principles Demonstrated
 
 ### Delegation
-- **WeatherUI → WeatherController**: UI delegates all business logic to controller
-- **WeatherController → Services**: Controller delegates specific tasks to specialized services
+- **CurrencyUI → CurrencyController**: UI delegates all business logic to controller
+- **CurrencyController → Services**: Controller delegates specific tasks to specialized services
 - **Clear separation**: Each class has a single, well-defined responsibility
 
 ### Encapsulation
@@ -137,11 +141,11 @@ ch.tbz.m320.weather/
 
 ### Polymorphism
 - Unified exception handling across different exception types
-- Strategy pattern for temperature conversions
+- Enum-based strategy for currency handling
 
 ### Composition
 - Controller composed of multiple services
-- `WeatherData` contains `City` and `Temperature` objects
+- `ExchangeRateData` contains `CurrencyPair` and `ExchangeRate` objects
 - Complex objects built from simpler ones
 
 ---
@@ -151,9 +155,9 @@ ch.tbz.m320.weather/
 1. **MVC Pattern** - Separation of presentation, logic, and data
 2. **Service Layer Pattern** - Business logic isolated in reusable services
 3. **Dependency Injection** - Services injected into controller via constructor
-4. **Strategy Pattern** - Different conversion strategies per temperature unit
+4. **Enum Pattern** - Type-safe currency codes with associated metadata
 5. **Immutability Pattern** - Model classes use `final` fields for thread safety
-6. **Enum Pattern** - Type-safe temperature units with associated symbols
+6. **Value Object Pattern** - ExchangeRate and CurrencyPair are immutable value objects
 
 ---
 
@@ -161,16 +165,16 @@ ch.tbz.m320.weather/
 
 ### Using IntelliJ IDEA (Recommended):
 1. Open the project in IntelliJ IDEA
-2. Locate [Main.java](src/main/java/ch/tbz/m320/weather/Main.java)
+2. Locate [Main.java](src/main/java/ch/tbz/m320/currency/Main.java)
 3. Right-click and select "Run 'Main.main()'"
 
 ### Using Command Line:
 ```bash
 # Compile
-javac -d bin src/main/java/ch/tbz/m320/weather/**/*.java
+javac -d bin src/main/java/ch/tbz/m320/currency/**/*.java
 
 # Run
-java -cp bin ch.tbz.m320.weather.Main
+java -cp bin ch.tbz.m320.currency.Main
 ```
 
 ---
@@ -179,19 +183,22 @@ java -cp bin ch.tbz.m320.weather.Main
 
 ```
 Main Menu
-├── 1. Get weather for a city
-│   └── Enter city name → Display weather
-├── 2. Manage favorite cities
-│   ├── Add favorite city
-│   ├── Remove favorite city
-│   ├── View favorite cities
-│   └── Get weather for all favorites
-├── 3. View weather history
-│   └── Display last 10 queries
-├── 4. Settings
-│   ├── Change temperature unit (Celsius/Fahrenheit/Kelvin)
-│   └── Clear weather history
-└── 5. Exit
+├── 1. Convert currency
+│   └── Enter amount and currencies → Display conversion
+├── 2. Get exchange rate
+│   └── Enter currency pair → Display rates
+├── 3. Manage favorite currency pairs
+│   ├── View favorite pairs
+│   ├── Add favorite pair
+│   ├── Remove favorite pair
+│   └── Get rates for all favorites
+├── 4. View conversion history
+│   └── Display last 10 conversions
+├── 5. Settings
+│   ├── Change base currency
+│   ├── Clear conversion history
+│   └── View all available currencies
+└── 6. Exit
 ```
 
 ---
@@ -199,43 +206,65 @@ Main Menu
 ## 8. Sample Output
 
 ```
-========================================
-       Welcome to Weather App!
-========================================
+====================================
+   Welcome to Currency Converter
+           System v1.0
+====================================
 
-Main Menu:
-1. Get weather for a city
-2. Manage favorite cities
-3. View weather history
-4. Settings
-5. Exit
+----- Main Menu -----
+1. Convert currency
+2. Get exchange rate
+3. Manage favorite currency pairs
+4. View conversion history
+5. Settings
+6. Exit
 
-Enter your choice: 1
-Enter city name: Zurich
+Your choice: 1
+
+----- Currency Conversion -----
+Enter amount: 100
+From currency (e.g., USD): USD
+To currency (e.g., EUR): EUR
+
+Fetching exchange rate...
 
 ========================================
-Weather for Zurich, Switzerland:
-Temperature: 22.5°C
-Feels like: 21.8°C
-Conditions: Partly cloudy
-Humidity: 65%
-Wind Speed: 12.5 km/h
-Pressure: 1013 hPa
-Last updated: 2025-10-28 14:30:00
+Conversion Result:
+100.00 USD = 92.15 EUR
 ========================================
 ```
 
 ---
 
-## 9. Data Structures Used
+## 9. Supported Currencies
 
-- **ArrayList<City>** - Stores favorite cities (dynamic sizing, efficient access)
-- **LinkedList<WeatherData>** - Maintains weather history with FIFO (max 10 entries, efficient insertions/deletions)
-- **Enum (TemperatureUnit)** - Type-safe temperature unit representation
+The application supports 10 major world currencies:
+
+| Code | Currency Name | Symbol |
+|------|--------------|--------|
+| USD  | US Dollar | $ |
+| EUR  | Euro | € |
+| CHF  | Swiss Franc | CHF |
+| GBP  | British Pound | £ |
+| JPY  | Japanese Yen | ¥ |
+| CNY  | Chinese Yuan | ¥ |
+| INR  | Indian Rupee | ₹ |
+| AUD  | Australian Dollar | A$ |
+| CAD  | Canadian Dollar | C$ |
+| BRL  | Brazilian Real | R$ |
 
 ---
 
-## 10. Learning Objectives Achieved
+## 10. Data Structures Used
+
+- **ArrayList<CurrencyPair>** - Stores favorite currency pairs (dynamic sizing, efficient access)
+- **LinkedList<ExchangeRateData>** - Maintains conversion history with FIFO (max 10 entries, efficient insertions/deletions)
+- **Enum (Currency)** - Type-safe currency representation with metadata
+- **HashMap<String, Double>** - Internal storage for base exchange rates in API service
+
+---
+
+## 11. Learning Objectives Achieved
 
 ✅ **Own Description**: This comprehensive README documentation
 ✅ **Delegation**: Multi-layered architecture with clear task delegation
@@ -248,11 +277,11 @@ Last updated: 2025-10-28 14:30:00
 
 ---
 
-## 11. Technical Highlights
+## 12. Technical Highlights
 
-### Mock Weather API Service
+### Mock Currency Exchange API Service
 
-The application uses a **mock weather API** ([WeatherApiService.java](src/main/java/ch/tbz/m320/weather/service/WeatherApiService.java)) - a simulated weather service that generates data locally instead of connecting to a real external API.
+The application uses a **mock currency exchange API** ([CurrencyApiService.java](src/main/java/ch/tbz/m320/currency/service/CurrencyApiService.java)) - a simulated exchange rate service that generates data locally instead of connecting to a real external API.
 
 **Why use a Mock API?**
 - No API key registration required
@@ -263,24 +292,21 @@ The application uses a **mock weather API** ([WeatherApiService.java](src/main/j
 
 **How it works:**
 
-1. **Pre-loaded Cities:** Contains hardcoded data for 6 major cities:
-   - Zurich, Switzerland (15.5°C, Partly cloudy)
-   - London, UK (12.3°C, Rainy)
-   - Paris, France (18.7°C, Sunny)
-   - New York, USA (22.1°C, Clear sky)
-   - Tokyo, Japan (19.3°C, Overcast)
-   - Sydney, Australia (25.5°C, Sunny)
+1. **Base Rates:** Uses USD as the base currency with fixed rates to other currencies
+   - 1 USD = 0.92 EUR
+   - 1 USD = 0.88 CHF
+   - 1 USD = 0.79 GBP
+   - 1 USD = 149.50 JPY
+   - And 6 more currencies
 
-2. **Random Generation:** For unknown cities, generates random realistic data:
-   - Temperature: 15-35°C
-   - Conditions: Sunny, Partly cloudy, Cloudy, Rainy, or Clear sky
-   - Humidity: 40-90%
-   - Wind speed: 0-20 km/h
-   - Pressure: 980-1040 hPa
+2. **Cross-Currency Conversion:** Converts any pair by going through USD
+   - EUR to GBP: EUR → USD → GBP
 
-3. **Realistic Variation:** Adds small random changes to data each query to simulate changing weather conditions
+3. **Market Variation:** Adds ±1% random variation to simulate real market fluctuations
 
-4. **Network Simulation:**
+4. **Buy/Sell Spread:** Includes 1.5% spread between buy and sell rates (realistic for currency exchange)
+
+5. **Network Simulation:**
    - Simulated network latency: 200-500ms delay
    - 5% connection failure rate for error handling demonstration
    - Throws `ApiConnectionException` to test error handling
@@ -292,30 +318,32 @@ The application uses a **mock weather API** ([WeatherApiService.java](src/main/j
 - ✅ Consistent test data for debugging
 - ✅ Realistic API behavior simulation
 
-In a production application, this mock service could be replaced with a real weather API (OpenWeatherMap, WeatherAPI) without changing other parts of the code thanks to the service layer architecture.
+In a production application, this mock service could be replaced with a real currency exchange API (ExchangeRate-API, Fixer.io) without changing other parts of the code thanks to the service layer architecture.
 
 ### Input Validation Rules
-- **City names**: 2-100 characters, only letters, spaces, hyphens, and dots
-- **Temperature units**: Must be CELSIUS, FAHRENHEIT, or KELVIN
+- **Amounts**: Must be positive, non-zero, less than 1 billion, and valid numbers
+- **Currency codes**: Must be valid 3-letter codes (USD, EUR, CHF, etc.)
 - **Menu choices**: Numeric values within valid ranges
 
-### Temperature Conversion Formulas
-- Celsius to Fahrenheit: `(C × 9/5) + 32`
-- Celsius to Kelvin: `C + 273.15`
-- All conversions use Celsius as internal standard
+### Exchange Rate Calculation
+All exchange rates use USD as the base:
+- To convert EUR to GBP: `EUR → USD → GBP`
+- Formula: `(1 / EUR_to_USD) * USD_to_GBP`
+- Small random variation added to simulate market changes
 
 ---
 
-## 12. Future Enhancements
+## 13. Future Enhancements
 
-- Integration with real weather API (OpenWeatherMap, WeatherAPI)
+- Integration with real exchange rate API (ExchangeRate-API, Fixer.io, Open Exchange Rates)
 - Persistent storage (save favorites and history to file/database)
 - GUI implementation using JavaFX
 - Unit tests using JUnit 5
-- 5-day weather forecasts
-- Weather alerts and notifications
+- Historical exchange rate charts
+- Currency conversion calculator widget
 - Multi-language support
+- Cryptocurrency support (BTC, ETH, etc.)
 
 ---
 
-**Note:** This application uses a mock weather service for educational purposes. Weather data is simulated and not from a real API.
+**Note:** This application uses a mock currency exchange service for educational purposes. Exchange rates are simulated and not real market rates.

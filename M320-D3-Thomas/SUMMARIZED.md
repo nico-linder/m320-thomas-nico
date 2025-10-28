@@ -1,4 +1,4 @@
-# Weather Application - Quick Summary
+# Currency Converter - Quick Summary
 
 **Student:** Thomas & Nico
 **Module:** M320 - Object-Oriented Programming
@@ -8,37 +8,43 @@
 
 ## What Does It Do?
 
-A **console-based weather app** that lets users check weather for cities, save favorites, and view history with customizable temperature units.
+A **console-based currency converter** that lets users convert between currencies, check exchange rates, save favorite pairs, and view conversion history.
 
 ---
 
 ## Main Functions
 
-### 1. Get Weather for a City
-- Enter any city name ("Zurich", "Paris", "Tokyo")
-- Displays: temperature, feels-like, conditions, humidity, wind speed, pressure
-- Automatically converts to your preferred unit (°C, °F, or K)
-- Example: "Zurich, Switzerland - 22.5°C - Partly cloudy"
+### 1. Convert Currency
+- Enter amount and select from/to currencies
+- Supports 10 major currencies (USD, EUR, CHF, GBP, JPY, CNY, INR, AUD, CAD, BRL)
+- Displays accurate conversion with 2 decimal places
+- Example: "100.00 USD = 92.15 EUR"
 
-### 2. Manage Favorite Cities
-- **Add favorites:** Save cities you check frequently
-- **Remove favorites:** Delete cities from your list
-- **View favorites:** See all saved cities
-- **Get weather for all:** Check weather for all favorites at once
+### 2. Get Exchange Rate
+- Look up current exchange rate between any two currencies
+- Shows buy rate and sell rate (1.5% spread)
+- Displays timestamp for rate query
+- Example: "1 USD = 0.9215 EUR"
+
+### 3. Manage Favorite Currency Pairs
+- **Add favorites:** Save frequently used currency pairs (e.g., USD/EUR)
+- **Remove favorites:** Delete pairs from your list
+- **View favorites:** See all saved pairs
+- **Get rates for all:** Check rates for all favorites at once
 - Stored in memory (ArrayList)
 
-### 3. View Weather History
-- Automatically tracks your last 10 weather queries
-- Shows timestamp for each query
-- FIFO system: oldest queries removed when limit reached
+### 4. View Conversion History
+- Automatically tracks your last 10 conversions
+- Shows currency pair, rate, and timestamp for each
+- FIFO system: oldest conversions removed when limit reached
 - Can be cleared manually in settings
 
-### 4. Settings
-- **Change temperature unit:** Switch between Celsius, Fahrenheit, or Kelvin
-- **Clear history:** Remove all historical queries
-- Preferences apply to all future weather displays
+### 5. Settings
+- **Change base currency:** Set preferred base currency (default: USD)
+- **Clear history:** Remove all historical conversions
+- **View all currencies:** See complete list of supported currencies
 
-### 5. Exit
+### 6. Exit
 - Cleanly exits the application
 - Displays goodbye message
 
@@ -47,28 +53,44 @@ A **console-based weather app** that lets users check weather for cities, save f
 ## Architecture (MVC Pattern)
 
 ```
-User → WeatherUI → WeatherController → Services → Models
+User → CurrencyUI → CurrencyController → Services → Models
 ```
 
-**View (WeatherUI):**
+**View (CurrencyUI):**
 - Handles user input/output
 - Displays menus and results
 
-**Controller (WeatherController):**
+**Controller (CurrencyController):**
 - Manages business logic
 - Coordinates between UI and services
 - Stores favorites and history
 
 **Services:**
-- `WeatherApiService` - Fetches weather data (mock API)
+- `CurrencyApiService` - Fetches exchange rates (mock API)
 - `DataValidationService` - Validates user inputs
-- `TemperatureConversionService` - Converts temperature units
+- `CurrencyConversionService` - Converts and formats amounts
 
 **Models:**
-- `City`, `Temperature`, `WeatherData`, `TemperatureUnit` (enum)
+- `Currency` (enum), `CurrencyPair`, `ExchangeRate`, `ExchangeRateData`
 
 **Exceptions:**
-- `InvalidCityException`, `ApiConnectionException`, `InvalidTemperatureUnitException`
+- `InvalidCurrencyException`, `ApiConnectionException`, `InvalidAmountException`
+
+---
+
+## Supported Currencies
+
+**10 Major Currencies:**
+- USD (US Dollar) - $
+- EUR (Euro) - €
+- CHF (Swiss Franc) - CHF
+- GBP (British Pound) - £
+- JPY (Japanese Yen) - ¥
+- CNY (Chinese Yuan) - ¥
+- INR (Indian Rupee) - ₹
+- AUD (Australian Dollar) - A$
+- CAD (Canadian Dollar) - C$
+- BRL (Brazilian Real) - R$
 
 ---
 
@@ -79,25 +101,29 @@ User → WeatherUI → WeatherController → Services → Models
 - **Abstraction:** Service layer hides complex operations
 - **Inheritance:** Custom exceptions extend Exception class
 - **Composition:** Controller contains services and collections
+- **Enum Pattern:** Type-safe currency codes
 
 ---
 
 ## Technical Details
 
 **Data Structures:**
-- `ArrayList<City>` for favorites
-- `LinkedList<WeatherData>` for history (max 10)
-- `enum TemperatureUnit` for type safety
+- `ArrayList<CurrencyPair>` for favorites
+- `LinkedList<ExchangeRateData>` for history (max 10)
+- `enum Currency` for type safety
+- `HashMap<String, Double>` for base rates
 
 **Mock API:**
-- 6 pre-loaded cities (Zurich, London, Paris, NYC, Tokyo, Sydney)
-- Random data generation for unknown cities
+- Base rates using USD as standard
+- Cross-currency conversion through USD
+- ±1% random market variation
+- 1.5% buy/sell spread
 - Simulated network delay (200-500ms)
 - 5% connection failure rate
 
 **Input Validation:**
-- City names: 2-100 characters, letters/spaces/hyphens only
-- Temperature units: CELSIUS, FAHRENHEIT, or KELVIN
+- Amounts: positive, non-zero, max 1 billion
+- Currency codes: valid 3-letter codes only
 - Menu choices: valid numeric ranges
 
 ---
@@ -106,12 +132,12 @@ User → WeatherUI → WeatherController → Services → Models
 
 **IntelliJ IDEA:**
 1. Open project
-2. Run `Main.java`
+2. Run `Main.java` in `ch.tbz.m320.currency` package
 
 **Command Line:**
 ```bash
-javac -d bin src/main/java/ch/tbz/m320/weather/**/*.java
-java -cp bin ch.tbz.m320.weather.Main
+javac -d bin src/main/java/ch/tbz/m320/currency/**/*.java
+java -cp bin ch.tbz.m320.currency.Main
 ```
 
 ---
@@ -120,22 +146,21 @@ java -cp bin ch.tbz.m320.weather.Main
 
 ```
 Main Menu:
-1. Get weather for a city
-2. Manage favorite cities
-3. View weather history
-4. Settings
-5. Exit
+1. Convert currency
+2. Get exchange rate
+3. Manage favorite currency pairs
+4. View conversion history
+5. Settings
+6. Exit
 
-Enter your choice: 1
-Enter city name: Zurich
+Your choice: 1
 
-Weather for Zurich, Switzerland:
-Temperature: 22.5°C
-Feels like: 21.8°C
-Conditions: Partly cloudy
-Humidity: 65%
-Wind Speed: 12.5 km/h
-Pressure: 1013 hPa
+Enter amount: 100
+From currency: USD
+To currency: EUR
+
+Conversion Result:
+100.00 USD = 92.15 EUR
 ```
 
 ---
@@ -147,8 +172,9 @@ Pressure: 1013 hPa
 ✅ Input validation with custom exceptions
 ✅ Code separation (UI / Logic / Services)
 ✅ Encapsulation and abstraction
-✅ Data structures (ArrayList, LinkedList, Enum)
+✅ Data structures (ArrayList, LinkedList, Enum, HashMap)
+✅ Enum pattern for type safety
 
 ---
 
-**Note:** Uses mock weather service for educational purposes. Weather data is simulated, not real.
+**Note:** Uses mock exchange rate service for educational purposes. Rates are simulated, not real market data.
