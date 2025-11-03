@@ -56,9 +56,9 @@ public class ConsoleUI {
      * Clean Code: Small method with single purpose
      */
     private void printWelcome() {
-        System.out.println("\n" + "=".repeat(50));
+        System.out.println("\n" + repeat("=", 50));
         System.out.println("   STOCK TRADING SIMULATOR");
-        System.out.println("=".repeat(50));
+        System.out.println(repeat("=", 50));
     }
 
     /**
@@ -187,7 +187,7 @@ public class ConsoleUI {
         Collection<Stock> stocks = stockMarket.getAllStocks();
 
         System.out.printf("%-10s %-30s %10s%n", "SYMBOL", "NAME", "PRICE");
-        System.out.println("-".repeat(52));
+        System.out.println(repeat("-", 52));
 
         for (Stock stock : stocks) {
             System.out.printf("%-10s %-30s $%9.2f%n",
@@ -314,7 +314,7 @@ public class ConsoleUI {
 
         System.out.printf("%-10s %-30s %10s %10s %15s%n",
                 "SYMBOL", "NAME", "QUANTITY", "PRICE", "TOTAL VALUE");
-        System.out.println("-".repeat(77));
+        System.out.println(repeat("-", 77));
 
         BigDecimal totalPortfolioValue = BigDecimal.ZERO;
 
@@ -337,7 +337,7 @@ public class ConsoleUI {
             }
         }
 
-        System.out.println("-".repeat(77));
+        System.out.println(repeat("-", 77));
         System.out.printf("Total Portfolio Value: $%.2f%n", totalPortfolioValue);
         System.out.printf("Cash Balance: $%.2f%n", currentUser.getBalance());
         System.out.printf("Total Account Value: $%.2f%n",
@@ -443,5 +443,17 @@ public class ConsoleUI {
         int value = scanner.nextInt();
         scanner.nextLine(); // Clear buffer
         return value;
+    }
+
+    /**
+     * Helper method to repeat a string n times (Java 8 compatible).
+     * Replaces String.repeat() which was added in Java 11.
+     */
+    private String repeat(String str, int count) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            sb.append(str);
+        }
+        return sb.toString();
     }
 }

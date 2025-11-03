@@ -168,18 +168,18 @@ public class UserRepository {
             return; // No file yet, start with empty map
         }
 
-        try (Reader reader = new FileReader(dataFilePath.toFile())) {
-            // Check if file is empty or contains only whitespace
-            reader.mark(1);
-            if (reader.read() == -1) {
+        try {
+            // Check if file is empty
+            if (Files.size(dataFilePath) == 0) {
                 System.out.println("User data file is empty. Starting with fresh user repository.");
                 return;
             }
-            reader.reset();
 
-            Map<String, User> loadedUsers = gson.fromJson(reader, HashMap.class);
-            if (loadedUsers != null) {
-                this.users = loadedUsers;
+            try (Reader reader = new FileReader(dataFilePath.toFile())) {
+                Map<String, User> loadedUsers = gson.fromJson(reader, HashMap.class);
+                if (loadedUsers != null) {
+                    this.users = loadedUsers;
+                }
             }
         } catch (JsonSyntaxException e) {
             System.err.println("Corrupted user data file detected. Starting with fresh user repository.");
