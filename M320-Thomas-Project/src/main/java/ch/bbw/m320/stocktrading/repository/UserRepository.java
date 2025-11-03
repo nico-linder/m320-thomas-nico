@@ -1,5 +1,8 @@
 package ch.bbw.m320.stocktrading.repository;
 
+import ch.bbw.m320.stocktrading.model.BuyTransaction;
+import ch.bbw.m320.stocktrading.model.SellTransaction;
+import ch.bbw.m320.stocktrading.model.Transaction;
 import ch.bbw.m320.stocktrading.model.User;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -42,6 +45,7 @@ public class UserRepository {
         this.gson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .registerTypeAdapter(Transaction.class, new TransactionAdapter())
                 .create();
         this.dataFilePath = Paths.get(DATA_DIR, USERS_FILE);
         this.users = new HashMap<>();
@@ -227,6 +231,39 @@ public class UserRepository {
         @Override
         public LocalDateTime deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) throws JsonParseException {
             return LocalDateTime.parse(json.getAsString(), FORMATTER);
+        }
+    }
+
+    /**
+     * Custom Gson TypeAdapter for Transaction serialization/deserialization.
+     * Handles polymorphism by storing the concrete type and delegating to appropriate subclass.
+     */
+    private static class TransactionAdapter implements JsonSerializer<Transaction>, JsonDeserializer<Transaction> {
+        private static final String CLASS_TYPE = "transactionClass";
+
+        @Override
+        public JsonElement serialize(Transaction transaction, java.lang.reflect.Type type, JsonSerializationContext context) {
+            JsonObject jsonObject = new JsonObject();
+            // Store the actual class name
+            jsonObject.addProperty(CLASS_TYPE, transaction.getClass().getName());
+            // Serialize the transaction data
+            JsonElement transactionData = context.serialize(transaction, transaction.getClass());
+            jsonObject.add("data", transactionData);
+            return jsonObject;
+        }
+
+        @Override
+        public Transaction deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            String className = jsonObject.get(CLASS_TYPE).getAsString();
+            JsonElement transactionData = jsonObject.get("data");
+
+            try {
+                Class<?> clazz = Class.forName(className);
+                return context.deserialize(transactionData, clazz);
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException("Unknown transaction class: " + className, e);
+            }
         }
     }
 }
