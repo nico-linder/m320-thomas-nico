@@ -2,8 +2,10 @@ package ch.bbw.m320.stocktrading.repository;
 
 import ch.bbw.m320.stocktrading.model.User;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -162,7 +164,6 @@ public class UserRepository {
      * Loads users from disk.
      * AI-Generated: JSON deserialization logic
      */
-    @SuppressWarnings("unchecked")
     private void loadUsers() {
         if (!Files.exists(dataFilePath)) {
             return; // No file yet, start with empty map
@@ -176,7 +177,9 @@ public class UserRepository {
             }
 
             try (Reader reader = new FileReader(dataFilePath.toFile())) {
-                Map<String, User> loadedUsers = gson.fromJson(reader, HashMap.class);
+                // Use TypeToken to tell Gson the exact generic type we need
+                Type userMapType = new TypeToken<HashMap<String, User>>(){}.getType();
+                Map<String, User> loadedUsers = gson.fromJson(reader, userMapType);
                 if (loadedUsers != null) {
                     this.users = loadedUsers;
                 }
