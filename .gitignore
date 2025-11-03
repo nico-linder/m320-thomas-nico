@@ -116,3 +116,6 @@ fabric.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij
 .claude/settings.local.json
+M320-Thomas-Project/.claude/assignment.md
+M320-Thomas-Project/.claude/settings.local.json
+M320-Q3/.idea/vcs.xml
