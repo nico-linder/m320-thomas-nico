@@ -1,0 +1,201 @@
+@startuml Sell Stock - Sequence Diagram
+
+title Stock Trading Simulator - Use Case: Sell Stock
+
+' Participants
+actor User as user
+participant "ConsoleUI" as ui
+participant "TradingService" as service
+participant "StockMarket" as market
+participant "User" as userObj
+participant "Portfolio" as portfolio
+participant "UserRepository" as repo
+
+' Main Flow
+user -> ui: Select "Sell Stock" (option 3)
+activate ui
+
+' Check Portfolio Not Empty
+ui -> userObj: getPortfolio()
+activate userObj
+userObj --> ui: return Portfolio
+deactivate userObj
+
+ui -> portfolio: isEmpty()
+activate portfolio
+portfolio --> ui: return false
+deactivate portfolio
+
+ui -> user: Prompt "Stock symbol:"
+user -> ui: Enter "AAPL"
+
+' Check Ownership
+ui -> portfolio: getQuantity("AAPL")
+activate portfolio
+portfolio --> ui: return 10 shares
+deactivate portfolio
+
+' Get Current Price
+ui -> service: getStockPrice("AAPL")
+activate service
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock object
+deactivate market
+service --> ui: return price ($180.00)
+deactivate service
+
+ui -> user: Display "Current price: $180.00"
+ui -> user: Display "You own: 10 shares"
+
+' Get Quantity to Sell
+ui -> user: Prompt "Quantity to sell:"
+user -> ui: Enter "5"
+
+' Calculate Revenue
+ui -> service: calculateSaleRevenue("AAPL", 5)
+activate service
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock
+deactivate market
+service --> ui: return totalRevenue ($900.00)
+deactivate service
+
+ui -> user: Display "Total revenue: $900.00"
+
+' Confirm Sale
+ui -> user: Prompt "Confirm sale? (yes/no):"
+user -> ui: Enter "yes"
+
+' Execute Sale
+ui -> service: sellStock(user, "AAPL", 5)
+activate service
+
+' Validate Stock Exists
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock object
+deactivate market
+
+' Check Stock Quantity
+service -> userObj: getPortfolio()
+activate userObj
+userObj --> service: return Portfolio
+deactivate userObj
+
+service -> portfolio: getQuantity("AAPL")
+activate portfolio
+portfolio --> service: return 10
+deactivate portfolio
+
+note right of service
+  Validate: 5 <= 10
+  Sufficient stock available
+end note
+
+' Remove from Portfolio
+service -> portfolio: removeStock("AAPL", 5)
+activate portfolio
+portfolio --> service: void
+deactivate portfolio
+
+' Add Money to Balance
+service -> userObj: deposit($900.00)
+activate userObj
+userObj --> service: void
+deactivate userObj
+
+' Create Transaction
+service -> service: new SellTransaction("AAPL", 5, $180.00)
+activate service
+note right: Create transaction record
+deactivate service
+
+' Add to History
+service -> userObj: addTransaction(sellTransaction)
+activate userObj
+userObj --> service: void
+deactivate userObj
+
+service --> ui: return SellTransaction
+deactivate service
+
+' Save User Data
+ui -> repo: save(user)
+activate repo
+repo -> repo: persistUsers()
+note right: Serialize to JSON
+repo --> ui: void
+deactivate repo
+
+' Success Message
+ui -> user: Display "Sale successful!"
+ui -> user: Display transaction details
+deactivate ui
+
+' ===== ALTERNATIVE FLOWS =====
+
+group Alternative Flow 1: Portfolio Empty
+    user -> ui: Select "Sell Stock"
+    activate ui
+
+    ui -> portfolio: isEmpty()
+    activate portfolio
+    portfolio --> ui: return true
+    deactivate portfolio
+
+    ui -> user: Display "Your portfolio is empty"
+    deactivate ui
+end
+
+group Alternative Flow 2: Stock Not Owned
+    user -> ui: Select "Sell Stock"
+    activate ui
+    ui -> user: Enter "MSFT"
+
+    ui -> portfolio: getQuantity("MSFT")
+    activate portfolio
+    portfolio --> ui: return 0
+    deactivate portfolio
+
+    ui -> user: Display "You don't own any shares of MSFT"
+    deactivate ui
+end
+
+group Alternative Flow 3: Insufficient Stock
+    user -> ui: Select "Sell Stock"
+    activate ui
+    ui -> user: Enter "AAPL" and quantity "50"
+
+    ui -> service: sellStock(user, "AAPL", 50)
+    activate service
+    service -> portfolio: getQuantity("AAPL")
+    activate portfolio
+    portfolio --> service: return 10
+    deactivate portfolio
+
+    note right of service
+      Validate: 50 > 10
+      Insufficient stock!
+    end note
+
+    service --> ui: throw InsufficientStockException
+    deactivate service
+
+    ui -> user: Display "Error: Insufficient stock"
+    deactivate ui
+end
+
+group Alternative Flow 4: User Cancels
+    user -> ui: Select "Sell Stock"
+    activate ui
+    ui -> user: Display price and revenue
+    ui -> user: Prompt "Confirm sale? (yes/no):"
+    user -> ui: Enter "no"
+
+    ui -> user: Display "Sale cancelled"
+    deactivate ui
+end
+
+@enduml

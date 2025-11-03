@@ -1,0 +1,173 @@
+@startuml Buy Stock - Sequence Diagram
+
+title Stock Trading Simulator - Use Case: Buy Stock
+
+' Participants
+actor User as user
+participant "ConsoleUI" as ui
+participant "TradingService" as service
+participant "StockMarket" as market
+participant "User" as userObj
+participant "Portfolio" as portfolio
+participant "UserRepository" as repo
+
+' Main Flow
+user -> ui: Select "Buy Stock" (option 2)
+activate ui
+
+ui -> user: Prompt "Stock symbol:"
+user -> ui: Enter "AAPL"
+
+' Get Stock Price
+ui -> service: getStockPrice("AAPL")
+activate service
+
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock object
+deactivate market
+
+service --> ui: return price ($175.50)
+deactivate service
+
+ui -> user: Display "Current price: $175.50"
+ui -> user: Display "Your balance: $8,000"
+
+' Get Quantity
+ui -> user: Prompt "Quantity to buy:"
+user -> ui: Enter "10"
+
+' Calculate Cost
+ui -> service: calculatePurchaseCost("AAPL", 10)
+activate service
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock
+deactivate market
+service --> ui: return totalCost ($1,755.00)
+deactivate service
+
+ui -> user: Display "Total cost: $1,755.00"
+
+' Confirm Purchase
+ui -> user: Prompt "Confirm purchase? (yes/no):"
+user -> ui: Enter "yes"
+
+' Execute Purchase
+ui -> service: buyStock(user, "AAPL", 10)
+activate service
+
+' Validate Stock Exists
+service -> market: getStock("AAPL")
+activate market
+market --> service: return Stock object
+deactivate market
+
+' Check Balance
+service -> userObj: hasSufficientBalance($1,755.00)
+activate userObj
+userObj --> service: return true
+deactivate userObj
+
+' Deduct Money
+service -> userObj: withdraw($1,755.00)
+activate userObj
+userObj --> service: void
+deactivate userObj
+
+' Add to Portfolio
+service -> userObj: getPortfolio()
+activate userObj
+userObj --> service: return Portfolio
+deactivate userObj
+
+service -> portfolio: addStock("AAPL", 10)
+activate portfolio
+portfolio --> service: void
+deactivate portfolio
+
+' Create Transaction
+service -> service: new BuyTransaction("AAPL", 10, $175.50)
+activate service
+note right: Create transaction record
+deactivate service
+
+' Add to History
+service -> userObj: addTransaction(buyTransaction)
+activate userObj
+userObj --> service: void
+deactivate userObj
+
+service --> ui: return BuyTransaction
+deactivate service
+
+' Save User Data
+ui -> repo: save(user)
+activate repo
+repo -> repo: persistUsers()
+note right: Serialize to JSON
+repo --> ui: void
+deactivate repo
+
+' Success Message
+ui -> user: Display "Purchase successful!"
+ui -> user: Display transaction details
+deactivate ui
+
+' ===== ALTERNATIVE FLOWS =====
+
+group Alternative Flow 1: Stock Not Found
+    user -> ui: Select "Buy Stock"
+    activate ui
+    ui -> user: Prompt "Stock symbol:"
+    user -> ui: Enter "INVALID"
+
+    ui -> service: getStockPrice("INVALID")
+    activate service
+    service -> market: getStock("INVALID")
+    activate market
+    market --> service: return null
+    deactivate market
+    service --> ui: throw StockNotFoundException
+    deactivate service
+
+    ui -> user: Display "Error: Stock not found: INVALID"
+    deactivate ui
+end
+
+group Alternative Flow 2: Insufficient Balance
+    user -> ui: Select "Buy Stock"
+    activate ui
+    ui -> user: Enter symbol and quantity
+
+    ui -> service: buyStock(user, "AAPL", 100)
+    activate service
+    service -> market: getStock("AAPL")
+    activate market
+    market --> service: return Stock
+    deactivate market
+
+    service -> userObj: hasSufficientBalance($17,550)
+    activate userObj
+    userObj --> service: return false
+    deactivate userObj
+
+    service --> ui: throw InsufficientBalanceException
+    deactivate service
+
+    ui -> user: Display "Error: Insufficient balance"
+    deactivate ui
+end
+
+group Alternative Flow 3: User Cancels
+    user -> ui: Select "Buy Stock"
+    activate ui
+    ui -> user: Display price and cost
+    ui -> user: Prompt "Confirm purchase? (yes/no):"
+    user -> ui: Enter "no"
+
+    ui -> user: Display "Purchase cancelled"
+    deactivate ui
+end
+
+@enduml
