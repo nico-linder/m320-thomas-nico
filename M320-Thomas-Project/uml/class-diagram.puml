@@ -1,0 +1,301 @@
+@startuml Stock Trading Simulator - Class Diagram
+
+' Design Patterns Styling
+skinparam class {
+    BackgroundColor<<Singleton>> LightYellow
+    BackgroundColor<<Repository>> LightBlue
+    BackgroundColor<<Exception>> LightCoral
+}
+
+' ===== MODEL LAYER =====
+
+package "model" {
+
+    ' Stock Market - Singleton Pattern
+    class StockMarket <<Singleton>> {
+        - {static} instance: StockMarket
+        - availableStocks: Map<String, Stock>
+        - random: Random
+        --
+        - StockMarket()
+        + {static} getInstance(): StockMarket
+        + addStock(stock: Stock): void
+        + getStock(symbol: String): Stock
+        + getAllStocks(): Collection<Stock>
+        + simulatePriceChanges(): void
+    }
+
+    ' Stock
+    class Stock {
+        - symbol: String
+        - name: String
+        - currentPrice: BigDecimal
+        - priceHistory: List<PricePoint>
+        --
+        + Stock(symbol: String, name: String, initialPrice: BigDecimal)
+        + updatePrice(newPrice: BigDecimal): void
+        + getSymbol(): String
+        + getName(): String
+        + getCurrentPrice(): BigDecimal
+        + getPriceHistory(): List<PricePoint>
+        + equals(o: Object): boolean
+        + hashCode(): int
+        + toString(): String
+    }
+
+    ' PricePoint inner class
+    class "Stock.PricePoint" as PricePoint {
+        - price: BigDecimal
+        - timestamp: LocalDateTime
+        --
+        + PricePoint(price: BigDecimal, timestamp: LocalDateTime)
+        + getPrice(): BigDecimal
+        + getTimestamp(): LocalDateTime
+        + toString(): String
+    }
+
+    ' User
+    class User {
+        - userId: String
+        - username: String
+        - balance: BigDecimal
+        - portfolio: Portfolio
+        - transactionHistory: List<Transaction>
+        --
+        + User(username: String, initialBalance: BigDecimal)
+        + deposit(amount: BigDecimal): void
+        + withdraw(amount: BigDecimal): void
+        + hasSufficientBalance(amount: BigDecimal): boolean
+        + addTransaction(transaction: Transaction): void
+        + getTotalAccountValue(stockMarket: StockMarket): BigDecimal
+        + getUserId(): String
+        + getUsername(): String
+        + getBalance(): BigDecimal
+        + getPortfolio(): Portfolio
+        + getTransactionHistory(): List<Transaction>
+    }
+
+    ' Portfolio
+    class Portfolio {
+        - holdings: Map<String, Integer>
+        --
+        + Portfolio()
+        + addStock(symbol: String, quantity: int): void
+        + removeStock(symbol: String, quantity: int): void
+        + getQuantity(symbol: String): int
+        + isEmpty(): boolean
+        + getStockCount(): int
+        + calculateTotalValue(stockMarket: StockMarket): BigDecimal
+        + getHoldings(): Map<String, Integer>
+    }
+
+    ' Transaction - Abstract Base Class (Template Method Pattern)
+    abstract class Transaction {
+        - transactionId: String
+        - stockSymbol: String
+        - quantity: int
+        - pricePerShare: BigDecimal
+        - timestamp: LocalDateTime
+        - type: TransactionType
+        --
+        # Transaction(stockSymbol: String, quantity: int, pricePerShare: BigDecimal, type: TransactionType)
+        + getTotalValue(): BigDecimal
+        + {abstract} getBalanceImpact(): BigDecimal
+        + {abstract} getTransactionDetails(): String
+        + getTransactionId(): String
+        + getStockSymbol(): String
+        + getQuantity(): int
+        + getPricePerShare(): BigDecimal
+        + getTimestamp(): LocalDateTime
+        + getType(): TransactionType
+        + toString(): String
+    }
+
+    ' Transaction Type Enum
+    enum TransactionType {
+        BUY
+        SELL
+    }
+
+    ' Buy Transaction
+    class BuyTransaction {
+        --
+        + BuyTransaction(stockSymbol: String, quantity: int, pricePerShare: BigDecimal)
+        + getBalanceImpact(): BigDecimal
+        + getTransactionDetails(): String
+    }
+
+    ' Sell Transaction
+    class SellTransaction {
+        --
+        + SellTransaction(stockSymbol: String, quantity: int, pricePerShare: BigDecimal)
+        + getBalanceImpact(): BigDecimal
+        + getTransactionDetails(): String
+    }
+}
+
+' ===== SERVICE LAYER =====
+
+package "service" {
+    class TradingService {
+        - stockMarket: StockMarket
+        --
+        + TradingService()
+        + buyStock(user: User, symbol: String, quantity: int): BuyTransaction
+        + sellStock(user: User, symbol: String, quantity: int): SellTransaction
+        + getStockPrice(symbol: String): BigDecimal
+        + calculatePurchaseCost(symbol: String, quantity: int): BigDecimal
+        + calculateSaleRevenue(symbol: String, quantity: int): BigDecimal
+    }
+}
+
+' ===== REPOSITORY LAYER =====
+
+package "repository" {
+    class UserRepository <<Repository>> {
+        - {static} DATA_DIR: String
+        - {static} USERS_FILE: String
+        - gson: Gson
+        - dataFilePath: Path
+        - users: Map<String, User>
+        --
+        + UserRepository()
+        + save(user: User): void
+        + findById(userId: String): Optional<User>
+        + findByUsername(username: String): Optional<User>
+        + existsByUsername(username: String): boolean
+        + delete(userId: String): boolean
+        + findAll(): Map<String, User>
+        + clear(): void
+        + count(): int
+        - initializeDataDirectory(): void
+        - persistUsers(): void
+        - loadUsers(): void
+    }
+
+    class "UserRepository.LocalDateTimeAdapter" as LocalDateTimeAdapter {
+        - {static} FORMATTER: DateTimeFormatter
+        --
+        + serialize(dateTime: LocalDateTime, type: Type, context: JsonSerializationContext): JsonElement
+        + deserialize(json: JsonElement, type: Type, context: JsonDeserializationContext): LocalDateTime
+    }
+}
+
+' ===== EXCEPTION LAYER =====
+
+package "exception" {
+    class StockNotFoundException <<Exception>> {
+        + StockNotFoundException(message: String)
+    }
+
+    class InsufficientBalanceException <<Exception>> {
+        + InsufficientBalanceException(message: String)
+    }
+
+    class InsufficientStockException <<Exception>> {
+        + InsufficientStockException(message: String)
+    }
+}
+
+' ===== UI LAYER =====
+
+package "ui" {
+    class ConsoleUI {
+        - scanner: Scanner
+        - tradingService: TradingService
+        - userRepository: UserRepository
+        - stockMarket: StockMarket
+        - currentUser: User
+        --
+        + ConsoleUI()
+        + start(): void
+        - printWelcome(): void
+        - handleLoginMenu(): void
+        - handleLogin(): void
+        - handleRegistration(): void
+        - handleMainMenu(): void
+        - handleViewStocks(): void
+        - handleBuyStock(): void
+        - handleSellStock(): void
+        - handleViewPortfolio(): void
+        - handleViewTransactionHistory(): void
+        - handleViewPriceHistory(): void
+        - handleAccountSummary(): void
+        - handleSimulatePriceChanges(): void
+        - handleLogout(): void
+        - handleExit(): void
+        - readInt(): int
+    }
+}
+
+' ===== MAIN =====
+
+package "main" {
+    class StockTradingApp {
+        + {static} main(args: String[]): void
+    }
+}
+
+' ===== RELATIONSHIPS =====
+
+' Inheritance
+Transaction <|-- BuyTransaction
+Transaction <|-- SellTransaction
+Transaction *-- TransactionType
+
+' Composition (Strong)
+User *-- Portfolio : owns
+User *-- "0..*" Transaction : owns
+Stock *-- "0..*" PricePoint : contains
+UserRepository +-- LocalDateTimeAdapter : inner class
+
+' Aggregation (Weak)
+StockMarket o-- "0..*" Stock : manages
+Portfolio ..> Stock : references by symbol
+
+' Association
+TradingService --> StockMarket : uses
+TradingService ..> User : uses
+TradingService ..> BuyTransaction : creates
+TradingService ..> SellTransaction : creates
+TradingService ..> StockNotFoundException : throws
+TradingService ..> InsufficientBalanceException : throws
+TradingService ..> InsufficientStockException : throws
+
+ConsoleUI --> TradingService : uses
+ConsoleUI --> UserRepository : uses
+ConsoleUI --> StockMarket : uses
+ConsoleUI --> User : manages current
+
+UserRepository --> User : persists
+Portfolio ..> StockMarket : queries for prices
+User ..> StockMarket : calculates total value
+
+StockTradingApp --> ConsoleUI : starts
+
+' Exceptions
+RuntimeException <|-- StockNotFoundException
+RuntimeException <|-- InsufficientBalanceException
+RuntimeException <|-- InsufficientStockException
+
+' Notes
+note right of StockMarket
+  **Design Pattern: Singleton**
+  Ensures only one market instance
+  exists with consistent stock prices
+end note
+
+note right of Transaction
+  **Design Pattern: Template Method**
+  Abstract base class defines common
+  behavior, subclasses implement
+  specific transaction logic
+end note
+
+note right of UserRepository
+  **Design Pattern: Repository**
+  Separates data access logic
+  from business logic
+end note
+
+@enduml
