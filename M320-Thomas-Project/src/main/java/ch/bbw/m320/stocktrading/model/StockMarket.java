@@ -1,7 +1,5 @@
 package ch.bbw.m320.stocktrading.model;
 
-import ch.bbw.m320.stocktrading.repository.StockMarketRepository;
-
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -21,7 +19,6 @@ public class StockMarket {
     private static StockMarket instance;
 
     private final Map<String, Stock> availableStocks;
-    private final StockMarketRepository repository;
 
     /**
      * Private constructor to prevent direct instantiation.
@@ -29,17 +26,7 @@ public class StockMarket {
      */
     private StockMarket() {
         this.availableStocks = new HashMap<>();
-        this.repository = new StockMarketRepository();
-
-        // Try to load saved stock prices, otherwise use defaults
-        Map<String, Stock> savedStocks = repository.load();
-        if (savedStocks != null) {
-            this.availableStocks.putAll(savedStocks);
-        } else {
-            initializeDefaultStocks();
-            // Save the default prices for next time
-            persistStocks();
-        }
+        initializeDefaultStocks();
     }
 
     /**
@@ -148,7 +135,6 @@ public class StockMarket {
             throw new IllegalArgumentException("Stock not found: " + symbol);
         }
         stock.updatePrice(newPrice);
-        persistStocks();
     }
 
     /**
@@ -173,9 +159,6 @@ public class StockMarket {
 
             stock.updatePrice(newPrice);
         }
-
-        // Persist the updated prices
-        persistStocks();
     }
 
     /**
@@ -185,25 +168,6 @@ public class StockMarket {
      */
     public int getStockCount() {
         return availableStocks.size();
-    }
-
-    /**
-     * Persists all stock data to disk.
-     * Private method following Clean Code principles.
-     */
-    private void persistStocks() {
-        repository.save(availableStocks);
-    }
-
-    /**
-     * Resets stock prices to default values.
-     * Useful for testing or resetting the market.
-     */
-    public void resetToDefaultPrices() {
-        availableStocks.clear();
-        initializeDefaultStocks();
-        persistStocks();
-        System.out.println("Stock prices have been reset to default values.");
     }
 
     @Override
