@@ -85,19 +85,6 @@ public class UserRepository {
     }
 
     /**
-     * Finds a user by their ID.
-     *
-     * @param userId The user ID to search for
-     * @return Optional containing the user if found
-     */
-    public Optional<User> findById(String userId) {
-        if (userId == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(users.get(userId));
-    }
-
-    /**
      * Finds a user by their username.
      *
      * @param username The username to search for
@@ -121,33 +108,6 @@ public class UserRepository {
      */
     public boolean existsByUsername(String username) {
         return findByUsername(username).isPresent();
-    }
-
-    /**
-     * Deletes a user from the repository.
-     *
-     * @param userId The ID of the user to delete
-     * @return true if user was deleted
-     */
-    public boolean delete(String userId) {
-        if (userId == null) {
-            return false;
-        }
-
-        boolean removed = users.remove(userId) != null;
-        if (removed) {
-            persistUsers();
-        }
-        return removed;
-    }
-
-    /**
-     * Gets all users.
-     *
-     * @return Map of all users
-     */
-    public Map<String, User> findAll() {
-        return new HashMap<>(users); // Defensive copy
     }
 
     /**
@@ -196,24 +156,6 @@ public class UserRepository {
             System.err.println("Error loading users: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Clears all users from the repository.
-     * Useful for testing.
-     */
-    public void clear() {
-        users.clear();
-        persistUsers();
-    }
-
-    /**
-     * Gets the number of users in the repository.
-     *
-     * @return The count of users
-     */
-    public int count() {
-        return users.size();
     }
 
     /**

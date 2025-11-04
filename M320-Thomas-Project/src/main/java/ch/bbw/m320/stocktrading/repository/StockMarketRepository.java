@@ -118,30 +118,6 @@ public class StockMarketRepository {
     }
 
     /**
-     * Checks if saved stock data exists.
-     *
-     * @return true if saved data exists
-     */
-    public boolean hasSavedData() {
-        return Files.exists(dataFilePath);
-    }
-
-    /**
-     * Deletes the saved stock data file.
-     * Useful for resetting to default prices.
-     */
-    public void clear() {
-        try {
-            if (Files.exists(dataFilePath)) {
-                Files.delete(dataFilePath);
-                System.out.println("Stock market data cleared. Default prices will be used on next load.");
-            }
-        } catch (IOException e) {
-            System.err.println("Error deleting stock market data: " + e.getMessage());
-        }
-    }
-
-    /**
      * Custom Gson TypeAdapter for LocalDateTime serialization/deserialization.
      * Fixes Java 21+ module system restrictions with Gson.
      */

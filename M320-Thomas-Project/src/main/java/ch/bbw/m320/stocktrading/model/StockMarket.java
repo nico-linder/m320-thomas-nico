@@ -104,19 +104,6 @@ public class StockMarket {
     }
 
     /**
-     * Checks if a stock exists in the market.
-     *
-     * @param symbol The stock symbol to check
-     * @return true if the stock exists
-     */
-    public boolean hasStock(String symbol) {
-        if (symbol == null) {
-            return false;
-        }
-        return availableStocks.containsKey(symbol.toUpperCase());
-    }
-
-    /**
      * Gets all available stocks.
      * Clean Code: Returns defensive copy to prevent external modification
      *
@@ -124,31 +111,6 @@ public class StockMarket {
      */
     public Collection<Stock> getAllStocks() {
         return Collections.unmodifiableCollection(availableStocks.values());
-    }
-
-    /**
-     * Gets all stock symbols.
-     *
-     * @return Set of all stock symbols
-     */
-    public Set<String> getAllStockSymbols() {
-        return Collections.unmodifiableSet(availableStocks.keySet());
-    }
-
-    /**
-     * Updates a stock's price.
-     * This method demonstrates delegation to the Stock object.
-     *
-     * @param symbol The stock symbol
-     * @param newPrice The new price
-     */
-    public void updateStockPrice(String symbol, BigDecimal newPrice) {
-        Stock stock = getStock(symbol);
-        if (stock == null) {
-            throw new IllegalArgumentException("Stock not found: " + symbol);
-        }
-        stock.updatePrice(newPrice);
-        persistStocks();
     }
 
     /**
@@ -179,31 +141,11 @@ public class StockMarket {
     }
 
     /**
-     * Gets the number of stocks in the market.
-     *
-     * @return The count of available stocks
-     */
-    public int getStockCount() {
-        return availableStocks.size();
-    }
-
-    /**
      * Persists all stock data to disk.
      * Private method following Clean Code principles.
      */
     private void persistStocks() {
         repository.save(availableStocks);
-    }
-
-    /**
-     * Resets stock prices to default values.
-     * Useful for testing or resetting the market.
-     */
-    public void resetToDefaultPrices() {
-        availableStocks.clear();
-        initializeDefaultStocks();
-        persistStocks();
-        System.out.println("Stock prices have been reset to default values.");
     }
 
     @Override
