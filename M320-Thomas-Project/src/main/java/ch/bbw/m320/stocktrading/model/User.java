@@ -19,7 +19,7 @@ public class User {
     private final String username;
     private BigDecimal balance;
     private final Portfolio portfolio;
-    private final List<Transaction> transactionHistory;
+    private List<Transaction> transactionHistory;  // Non-final to support lazy initialization for Gson compatibility
 
     /**
      * Creates a new user with an initial balance.
@@ -94,6 +94,10 @@ public class User {
         if (transaction == null) {
             throw new IllegalArgumentException("Transaction cannot be null");
         }
+        // Lazy initialization for backward compatibility with old JSON data
+        if (transactionHistory == null) {
+            transactionHistory = new ArrayList<>();
+        }
         transactionHistory.add(transaction);
     }
 
@@ -104,6 +108,10 @@ public class User {
      * @return Unmodifiable list of transactions
      */
     public List<Transaction> getTransactionHistory() {
+        // Handle case where Gson might deserialize to null (backward compatibility)
+        if (transactionHistory == null) {
+            return Collections.emptyList();
+        }
         return Collections.unmodifiableList(transactionHistory);
     }
 
