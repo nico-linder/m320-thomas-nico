@@ -237,9 +237,11 @@ public class UserRepository {
     /**
      * Custom Gson TypeAdapter for Transaction serialization/deserialization.
      * Handles polymorphism by storing the concrete type and delegating to appropriate subclass.
+     * Supports both old format (with "type" field) and new format (with "transactionClass" wrapper).
      */
     private static class TransactionAdapter implements JsonSerializer<Transaction>, JsonDeserializer<Transaction> {
         private static final String CLASS_TYPE = "transactionClass";
+        private static final String TYPE_FIELD = "type";
 
         @Override
         public JsonElement serialize(Transaction transaction, java.lang.reflect.Type type, JsonSerializationContext context) {
@@ -255,15 +257,34 @@ public class UserRepository {
         @Override
         public Transaction deserialize(JsonElement json, java.lang.reflect.Type type, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-            String className = jsonObject.get(CLASS_TYPE).getAsString();
-            JsonElement transactionData = jsonObject.get("data");
 
-            try {
-                Class<?> clazz = Class.forName(className);
-                return context.deserialize(transactionData, clazz);
-            } catch (ClassNotFoundException e) {
-                throw new JsonParseException("Unknown transaction class: " + className, e);
+            // Check if this is the new format (with transactionClass wrapper)
+            if (jsonObject.has(CLASS_TYPE)) {
+                String className = jsonObject.get(CLASS_TYPE).getAsString();
+                JsonElement transactionData = jsonObject.get("data");
+
+                try {
+                    Class<?> clazz = Class.forName(className);
+                    return context.deserialize(transactionData, clazz);
+                } catch (ClassNotFoundException e) {
+                    throw new JsonParseException("Unknown transaction class: " + className, e);
+                }
             }
+
+            // Handle old format (with "type" field directly in object)
+            if (jsonObject.has(TYPE_FIELD)) {
+                String transactionType = jsonObject.get(TYPE_FIELD).getAsString();
+
+                if ("BUY".equalsIgnoreCase(transactionType)) {
+                    return context.deserialize(json, BuyTransaction.class);
+                } else if ("SELL".equalsIgnoreCase(transactionType)) {
+                    return context.deserialize(json, SellTransaction.class);
+                } else {
+                    throw new JsonParseException("Unknown transaction type: " + transactionType);
+                }
+            }
+
+            throw new JsonParseException("Transaction JSON missing both 'transactionClass' and 'type' fields");
         }
     }
 }
